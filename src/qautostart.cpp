@@ -41,7 +41,7 @@ Autostart::Autostart() {
 bool Autostart::isAutostart() const {
     QSettings settings(REG_KEY, QSettings::NativeFormat);
 
-    if (settings.value(appPath()).isNull()) {
+    if (settings.value(appName()).isNull()) {
         return false;
     }
 
@@ -52,7 +52,7 @@ void Autostart::setAutostart(bool autostart) {
     QSettings settings(REG_KEY, QSettings::NativeFormat);
 
     if (autostart) {
-        settings.setValue(appPath() , appPath().replace('/','\\'));
+        settings.setValue(appName() , appPath().replace('/','\\'));
     } else {
         settings.remove(appPath());
     }
