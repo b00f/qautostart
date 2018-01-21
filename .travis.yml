@@ -1,4 +1,7 @@
-language: c
+language: cpp
+compiler: gcc
+sudo: require
+dist: trusty
 
 os:
   - linux
