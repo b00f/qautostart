@@ -132,7 +132,7 @@ void Autostart::setAutostart(bool autostart) {
         if (file.open(QIODevice::ReadWrite)) {
             QTextStream stream(&file);
             stream << "[Desktop Entry]" << endl;
-            stream << "Exec="+appPath()+"/"+appPath() << endl;
+            stream << "Exec=" << appPath() << endl;
             stream << "Type=Application" << endl;
         }
     }
