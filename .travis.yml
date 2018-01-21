@@ -25,3 +25,6 @@ script:
   - qmake CONFIG+=release PREFIX=/usr
   - make -j$(nproc)
   
+after_success:
+  - ./release/test
+  
