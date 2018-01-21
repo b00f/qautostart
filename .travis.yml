@@ -29,5 +29,5 @@ script:
   - make -j$(nproc)
   
 after_success:
-  - ./release/test
+  - ./test/test
   
