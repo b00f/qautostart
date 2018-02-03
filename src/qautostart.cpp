@@ -26,6 +26,7 @@
 #include <QTextStream>
 #include <QFileInfo>
 #include <QSettings>
+#include <QProcess>
 #include <QString>
 #include <QFile>
 #include <QDir>
@@ -93,9 +94,9 @@ void Autostart::setAutostart(bool autostart) {
 
 QString Autostart::appPath() const {
     QDir appDir = QDir(qApp->applicationDirPath());
-    dir.cdUp();
-    dir.cdUp();
-    QString absolutePath = dir.absolutePath();
+    appDir.cdUp();
+    appDir.cdUp();
+    QString absolutePath = appDir.absolutePath();
     // absolutePath will contain a "/" at the end,
     // but we want the clean path to the .app bundle
     if ( absolutePath.length() > 0 && absolutePath.right(1) == "/" ) {
