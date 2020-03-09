@@ -66,44 +66,40 @@ QString Autostart::appPath() const {
 #elif defined (Q_OS_MAC)
 
 bool Autostart::isAutostart() const {
-    QStringList args;
-    args << "-e tell application \"System Events\" contains login item \"" + appPath() + "\""; ///???
-
-    return QProcess::execute("osascript", args);
+    QProcess process;
+    process.start("osascript", {
+        "-e tell application \"System Events\" to get the path of every login item"
+    });
+    process.waitForFinished(3000);
+    const auto output = QString::fromLocal8Bit(process.readAllStandardOutput());
+    return output.contains(appPath());
 }
 
 void Autostart::setAutostart(bool autostart) {
     // Remove any existing login entry for this app first, in case there was one
     // from a previous installation, that may be under a different launch path.
     {
-        QStringList args;
-        args << "-e tell application \"System Events\" to delete login item \"" + appPath() + "\"";
-
-        QProcess::execute("osascript", args);
+        QProcess::execute("osascript", {
+            "-e tell application \"System Events\" to delete every login item whose name is \"" + appName() + "\""
+        });
     }
 
     // Now install the login item, if needed.
     if ( autostart )
     {
-        QStringList args;
-        args << "-e tell application \"System Events\" to make login item at end with properties {path:\"" + appPath() + "\", hidden:false}";
-
-        QProcess::execute("osascript", args);
+        QProcess::execute("osascript", {
+            "-e tell application \"System Events\" to make login item at end with properties {path:\"" + appPath() + "\", hidden:true, name: \"" + appName() + "\"}"
+        });
     }
 }
 
 QString Autostart::appPath() const {
-    QDir appDir = QDir(qApp->applicationDirPath());
+    QDir appDir = QDir(QCoreApplication::applicationDirPath());
     appDir.cdUp();
     appDir.cdUp();
     QString absolutePath = appDir.absolutePath();
-    // absolutePath will contain a "/" at the end,
-    // but we want the clean path to the .app bundle
-    if ( absolutePath.length() > 0 && absolutePath.right(1) == "/" ) {
-        absolutePath.chop(1);
-    }
 
-    return absolutePath + " --autostart";
+    return absolutePath;
 }
 
 #elif defined (Q_OS_LINUX)
