@@ -4,5 +4,5 @@ A library that helps Qt Application to run on startup
 
 ## Supported OS
 * windows
-* Ubuntu
+* Linux/Gnome
 * Mac
