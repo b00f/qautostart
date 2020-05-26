@@ -31,11 +31,6 @@
 #include <QFile>
 #include <QDir>
 
-
-Autostart::Autostart() {
-
-}
-
 #if defined (Q_OS_WIN)
 #define REG_KEY "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
 
@@ -55,7 +50,7 @@ void Autostart::setAutostart(bool autostart) {
     if (autostart) {
         settings.setValue(appName() , appPath().replace('/','\\'));
     } else {
-        settings.remove(appPath());
+        settings.remove(appName());
     }
 }
 
@@ -155,5 +150,5 @@ QString Autostart::appPath() const {
 #endif
 
 QString Autostart::appName() const {
-    return QFileInfo(QCoreApplication::applicationFilePath()).fileName();
+    return QCoreApplication::applicationName();
 }

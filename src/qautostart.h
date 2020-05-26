@@ -23,15 +23,11 @@
 #ifndef AUTOSTART_H
 #define AUTOSTART_H
 
-#include <QObject>
+#include <QString>
 
 class Autostart
-    : public QObject
 {
-    Q_OBJECT
 public:
-    explicit Autostart();
-
     bool isAutostart() const;
     void setAutostart(bool autostart);
 
