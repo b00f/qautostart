@@ -144,7 +144,13 @@ void Autostart::setAutostart(bool autostart) {
 }
 
 QString Autostart::appPath() const {
-    return QCoreApplication::applicationFilePath() + " --autostart";
+    QString cmd;
+    if (Autostart::isFlatpak()) {
+        cmd = "flatpak run " + QString::fromUtf8(qgetenv("FLATPAK_ID"));
+    } else {
+        cmd = QCoreApplication::applicationFilePath();
+    }
+    return cmd + " --autostart";
 }
 
 #else
@@ -163,5 +169,10 @@ QString Autostart::appPath() const {
 #endif
 
 QString Autostart::appName() const {
+#if defined(Q_OS_LINUX)
+    if (Autostart::isFlatpak()) {
+        return QString::fromUtf8(qgetenv("FLATPAK_ID"));
+    }
+#endif
     return QCoreApplication::applicationName();
 }

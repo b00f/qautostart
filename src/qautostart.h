@@ -32,6 +32,7 @@ public:
     void setAutostart(bool autostart);
 #if defined (Q_OS_LINUX)
     QString getAutostartDir() const;
+    bool isFlatpak() const;
 #endif
 
 protected:
