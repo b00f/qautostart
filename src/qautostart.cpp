@@ -30,6 +30,7 @@
 #include <QString>
 #include <QFile>
 #include <QDir>
+#include <QtGlobal>
 
 #if defined (Q_OS_WIN)
 #define REG_KEY "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
@@ -99,19 +100,31 @@ QString Autostart::appPath() const {
 
 #elif defined (Q_OS_LINUX)
 bool Autostart::isAutostart() const {
-    QFileInfo check_file(QDir::homePath() + "/.config/autostart/" + appName() +".desktop");
+    QFileInfo desktopFile(Autostart::getAutostartDir() + "/" + appName() + ".desktop");
+    return desktopFile.isFile();
+}
 
-    if (check_file.exists() && check_file.isFile()) {
-        return true;
+// Spec: https://specifications.freedesktop.org/autostart-spec/autostart-spec-0.5.html#idm45071660440416
+QString Autostart::getAutostartDir() const {
+    QByteArray xdgEnv = qgetenv("XDG_CONFIG_HOME");
+    if (!xdgEnv.isEmpty()) {
+        QDir xdgConfigHome = QDir(xdgEnv);
+        if (xdgConfigHome.exists()) {
+            return QDir::cleanPath(xdgConfigHome.absolutePath() + "/autostart");
+        }
     }
+    return QDir::homePath() + "/.config/autostart";
+}
 
-    return false;
+bool Autostart::isFlatpak() const {
+    QFileInfo flatpakInfo("/.flatpak-info");
+    return flatpakInfo.isFile() && !qgetenv("FLATPAK_ID").isEmpty();
 }
 
 void Autostart::setAutostart(bool autostart) {
-    QString path = QDir::homePath() + "/.config/autostart/";
-    QString name = appName() +".desktop";
-    QFile file(path+name);
+    QString path = Autostart::getAutostartDir();
+    QString name = appName() + ".desktop";
+    QFile file(path + "/" + name);
 
     file.remove();
 

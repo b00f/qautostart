@@ -30,6 +30,9 @@ class Autostart
 public:
     bool isAutostart() const;
     void setAutostart(bool autostart);
+#if defined (Q_OS_LINUX)
+    QString getAutostartDir() const;
+#endif
 
 protected:
     QString appPath() const;
